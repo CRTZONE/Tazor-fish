@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BetFury – Crypto Casino & Sportsbook | VIP Bonus & Free Spins</title>
+<style>
+/* ================= RESET & BASE ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+html { scroll-behavior: smooth; }
+html, body {
+    color: #ffffff;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-color: #05080e;
+}
+body {
+    background-image:
+        radial-gradient(circle at 15% 0%, rgba(237, 29, 73, 0.3) 0%, transparent 45%),
+        radial-gradient(circle at 85% 20%, rgba(255, 185, 0, 0.2) 0%, transparent 50%),
+        linear-gradient(180deg, #05080e 0%, #0c121e 50%, #05080e 100%);
+    background-attachment: fixed;
+}
+a { text-decoration: none; color: inherit; }
+button { border: none; cursor: pointer; font-family: inherit; }
+img { display: block; max-width: 100%; }
+
+/* ================= BACKGROUND CANVAS ================= */
+#fx-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ================= KEYFRAMES ================= */
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes megaPulse {
+    0%, 100% {
+        box-shadow: 0 8px 0 #7a0820, 0 12px 35px rgba(237, 29, 73, 0.75), 0 0 60px rgba(255, 215, 100, 0.5);
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        box-shadow: 0 8px 0 #7a0820, 0 18px 50px rgba(237, 29, 73, 1), 0 0 90px rgba(255, 215, 100, 0.9);
+        transform: translateY(-3px) scale(1.03);
+    }
+}
+@keyframes shine {
+    0%   { left: -70%; }
+    100% { left: 140%; }
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+@keyframes borderGlow {
+    0%, 100% { border-color: rgba(237, 29, 73, 0.4); }
+    50%      { border-color: rgba(255, 215, 100, 0.8); }
+}
+@keyframes floatCoin {
+    0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.9; }
+    50%      { transform: translateY(-18px) rotate(12deg); opacity: 1; }
+}
+
+/* ================= LOADER ================= */
+#loader {
+    position: fixed;
+    inset: 0;
+    background: #05080e;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+#loader.hidden { opacity: 0; visibility: hidden; }
+.loader__ring {
+    width: 64px;
+    height: 64px;
+    border: 3px solid rgba(237, 29, 73, 0.15);
+    border-top-color: #ffd966;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* ================= HEADER ================= */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 36px;
+    background: rgba(12, 18, 30, 0.85);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(255, 215, 100, 0.15);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    gap: 20px;
+    animation: fadeDown 0.7s ease both;
+}
+.header__left { display: flex; align-items: center; gap: 20px; }
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.3s ease;
+}
+.logo:hover { transform: scale(1.05); }
+.logo__img {
+    height: 40px;
+    width: auto;
+    filter: drop-shadow(0 2px 10px rgba(237, 29, 73, 0.8));
+}
+.logo__text {
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #fff 0%, #ffd966 50%, #ff4d5e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.header__right { display: flex; align-items: center; gap: 12px; }
+
+/* PREMIUM HEADER SIGN UP BUTTON */
+.button-3d-header {
+    background: linear-gradient(135deg, #ffd966 0%, #ff4d5e 50%, #ed1d49 100%);
+    color: #fff;
+    padding: 12px 30px;
+    border-radius: 10px;
+    font-weight: 900;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 0 #a30d2e, 0 6px 20px rgba(237, 29, 73, 0.6);
+    transition: transform 0.15s, box-shadow 0.25s;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+.button-3d-header:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #a30d2e, 0 12px 30px rgba(237, 29, 73, 0.9);
+}
+.button-3d-header:active {
+    transform: translateY(3px);
+    box-shadow: 0 0 0 #a30d2e, 0 2px 6px rgba(237, 29, 73, 0.4);
+}
+.button-3d-header::before,
+.home__btn::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -70%;
+    width: 40%; height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.6), transparent);
+    transform: skewX(-20deg);
+}
+.button-3d-header:hover::before,
+.home__btn:hover::before { animation: shine 0.8s ease; }
+
+/* ================= WRAPPER ================= */
+.wrapper {
+    padding: 30px 36px;
+    max-width: 1280px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+/* ================= HERO (UPDATED WITH YOUR BG PIC) ================= */
+.home__wrap {
+    position: relative;
+    overflow: hidden;
+    border-radius: 26px;
+    min-height: 480px;
+    margin-bottom: 32px;
+
+    background-image:
+        linear-gradient(90deg, rgba(5, 8, 14, 0.85) 0%, rgba(5, 8, 14, 0.4) 65%, transparent 100%),
+        url('https://www.image2url.com/r2/default/images/1790080261792-96923c5f-e395-44ae-91e6-ce5091e64728.jpg');
+    background-size: cover, cover;
+    background-position: center left, center center;
+    background-repeat: no-repeat;
+
+    box-shadow: inset 0 0 110px rgba(255, 185, 0, 0.3), 0 25px 60px rgba(0,0,0,0.85);
+    border: 1.5px solid rgba(255, 215, 100, 0.45);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 60px;
+
+    animation: fadeUp 1s ease 0.2s both, borderGlow 4s ease-in-out infinite;
+}
+.home__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(90deg, rgba(255, 215, 100, 0.25), rgba(237, 29, 73, 0.25));
+    border: 1px solid rgba(255, 215, 100, 0.7);
+    color: #fff2b0;
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 18px;
+    width: fit-content;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 4px 15px rgba(255, 215, 100, 0.2);
+}
+.home__title {
+    font-size: 58px;
+    font-weight: 900;
+    line-height: 1.05;
+    text-transform: uppercase;
+    color: #fff;
+    margin-bottom: 32px;
+    max-width: 600px;
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 4px 35px rgba(0,0,0,0.9);
+    animation: fadeUp 1s ease 0.4s both;
+}
+.home__title .accent {
+    background: linear-gradient(90deg, #ffd966 0%, #ff4d5e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ULTRA PREMIUM HERO SIGN UP BUTTON */
+.home__btn {
+    position: relative;
+    z-index: 2;
+    align-self: flex-start;
+    background: linear-gradient(135deg, #ffd966 0%, #ff4d5e 50%, #ed1d49 100%);
+    color: #fff;
+    padding: 20px 50px;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border-radius: 14px;
+    border: 1.5px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 0 #a30d2e, 0 12px 30px rgba(237, 29, 73, 0.75), 0 0 40px rgba(255, 215, 100, 0.5);
+    transition: transform 0.15s, box-shadow 0.25s;
+    display: inline-block;
+    overflow: hidden;
+    animation: fadeUp 1s ease 0.6s both, megaPulse 2.5s ease-in-out infinite;
+}
+.home__btn:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 10px 0 #a30d2e, 0 18px 40px rgba(237, 29, 73, 0.95), 0 0 60px rgba(255, 215, 100, 0.8);
+}
+.home__btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 #a30d2e, 0 2px 6px rgba(237, 29, 73, 0.4);
+}
+
+/* ================= CASINO / SPORT BLOCKS ================= */
+.blocks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+.block {
+    display: block;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: transform 0.35s cubic-bezier(.2,.8,.2,1), box-shadow 0.35s ease;
+}
+.block:hover { transform: translateY(-8px) scale(1.02); }
+.block--casino:hover { box-shadow: 0 25px 55px rgba(237, 29, 73, 0.45); }
+.block--sports:hover { box-shadow: 0 25px 55px rgba(255, 185, 0, 0.45); }
+
+.block__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 36px 32px;
+    border-radius: 20px;
+    min-height: 180px;
+    position: relative;
+    overflow: hidden;
+}
+.block--casino .block__inner {
+    background:
+        radial-gradient(circle at 90% 30%, rgba(237, 29, 73, 0.45) 0%, transparent 60%),
+        linear-gradient(135deg, #3a0a14 0%, #170408 100%);
+    border: 1.5px solid rgba(237, 29, 73, 0.7);
+}
+.block--sports .block__inner {
+    background:
+        radial-gradient(circle at 90% 30%, rgba(255, 185, 0, 0.35) 0%, transparent 60%),
+        linear-gradient(135deg, #2b1f06 0%, #0d0a02 100%);
+    border: 1.5px solid rgba(255, 185, 0, 0.7);
+}
+
+.block__data { max-width: 65%; position: relative; z-index: 2; }
+.block__title {
+    font-size: 32px;
+    font-weight: 900;
+    margin-bottom: 8px;
+}
+.block--casino .block__title { color: #ff5e77; }
+.block--sports .block__title { color: #ffd966; }
+.block__text { font-size: 14px; color: #c8cfdb; line-height: 1.55; }
+
+.icon-3d {
+    width: 95px;
+    height: 95px;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 22px rgba(0,0,0,0.7));
+    transition: transform 0.5s;
+}
+.block:hover .icon-3d { transform: scale(1.2) rotate(-8deg); }
+
+/* ================= MEGA REGISTER SECTION ================= */
+.register-section {
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px;
+    margin-bottom: 40px;
+    padding: 80px 40px 70px;
+    min-height: 580px;
+
+    background-image:
+        linear-gradient(180deg, rgba(20, 8, 35, 0.85) 0%, rgba(8, 4, 18, 0.98) 100%),
+        url('https://i.postimg.cc/ftK1mqBk/images-(1).jpg');
+    background-size: cover, cover;
+    background-position: center, center;
+
+    box-shadow: inset 0 0 130px rgba(255, 185, 0, 0.4), 0 35px 70px rgba(0,0,0,0.85);
+    border: 1.5px solid rgba(255, 215, 100, 0.5);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.register-prize {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, rgba(255, 215, 100, 0.2), rgba(255, 150, 50, 0.12));
+    border: 2px solid rgba(255, 215, 100, 0.8);
+    padding: 12px 28px;
+    border-radius: 50px;
+    margin-bottom: 30px;
+    font-size: 15px;
+    font-weight: 800;
+    color: #fff2b0;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+.register-prize__amount {
+    font-size: 28px;
+    font-weight: 900;
+    background: linear-gradient(180deg, #fff5cc, #ffd966, #d4a017);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.register-section__title {
+    font-size: 58px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    background: linear-gradient(180deg, #fff5cc 0%, #ffd966 40%, #d4a017 75%, #fff2b0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 18px;
+}
+.register-section__subtitle {
+    font-size: 18px;
+    color: #f0e6ff;
+    margin-bottom: 36px;
+    max-width: 640px;
+    line-height: 1.6;
+}
+
+/* ULTRA PREMIUM MEGA SIGN UP BUTTON */
+.mega-signup {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 26px 80px;
+    font-size: 26px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #fff;
+    background: linear-gradient(135deg, #ffd966 0%, #ff4d5e 40%, #ed1d49 80%, #a30d2e 100%);
+    border-radius: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 10px 0 #7a0820, 0 15px 40px rgba(237, 29, 73, 0.8), 0 0 80px rgba(255, 215, 100, 0.7);
+    transition: transform 0.2s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+    z-index: 3;
+    animation: megaPulse 2.2s ease-in-out infinite;
+}
+.mega-signup:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 14px 0 #7a0820, 0 22px 55px rgba(237, 29, 73, 1), 0 0 110px rgba(255, 215, 100, 0.95);
+}
+.mega-signup:active {
+    transform: translateY(8px);
+    box-shadow: 0 0 0 #7a0820, 0 2px 12px rgba(237, 29, 73, 0.6);
+}
+.mega-signup::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -70%;
+    width: 45%; height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.7), transparent);
+    transform: skewX(-25deg);
+}
+.mega-signup:hover::before { animation: shine 1s ease; }
+.mega-signup__icon {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+}
+
+/* BADGES */
+.register-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 36px;
+}
+.badge {
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 50px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 215, 100, 0.3);
+    color: #fff2b0;
+}
+
+/* FLOATING COINS */
+.coin-3d {
+    position: absolute;
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    pointer-events: none;
+    z-index: 1;
+    animation: floatCoin 5s ease-in-out infinite;
+}
+.coin-3d--btc  { top: 8%;  left: 5%; }
+.coin-3d--eth  { top: 20%; right: 6%; }
+.coin-3d--usdt { bottom: 14%; left: 8%; }
+.coin-3d--gold { bottom: 10%; right: 10%; }
+
+/* ================= FOOTER ================= */
+.footer {
+    background: rgba(12, 18, 30, 0.95);
+    border-top: 1px solid rgba(255, 215, 100, 0.15);
+    padding: 36px 36px;
+    margin-top: 40px;
+}
+.footer__inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+.footer__links { display: flex; gap: 28px; }
+.footer__link { color: #c8cfdb; font-size: 14px; font-weight: 700; }
+.footer__link:hover { color: #ffd966; }
+
+.footer__social { display: flex; gap: 12px; }
+.social-btn {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+}
+.footer__bottom {
+    text-align: center; font-size: 13px; color: #8892a4; margin-top: 24px;
+}
+
+@media (max-width: 768px) {
+    .wrapper { padding: 18px; }
+    .home__wrap { padding: 40px 24px; min-height: 400px; }
+    .home__title { font-size: 32px; }
+    .home__btn { width: 100%; text-align: center; padding: 16px; }
+    .blocks { grid-template-columns: 1fr; }
+    .register-section__title { font-size: 32px; }
+    .mega-signup { padding: 20px 36px; font-size: 18px; width: 100%; }
+}
+</style>
+</head>
+<body>
+
+    <canvas id="fx-canvas"></canvas>
+
+    <div id="loader">
+        <div class="loader__ring"></div>
+    </div>
+
+    <!-- ================= HEADER ================= -->
+    <header class="header">
+        <div class="header__left">
+            <a href="https://t.me/TezorFishTG" target="_blank" class="logo">
+                <img src="https://i.postimg.cc/XG8td1QG/images.png" alt="BetFury" class="logo__img">
+                <span class="logo__text">BetFury</span>
+            </a>
+        </div>
+
+        <div class="header__right">
+            <a href="https://betfury.bet/djps4zu9g" target="_blank" class="button-3d-header">Sign Up</a>
+        </div>
+    </header>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main class="wrapper">
+
+        <!-- Hero Section with Custom Background -->
+        <section class="home__wrap">
+            <div class="home__badge">👑 Captain Fury VIP Cruise</div>
+            <h1 class="home__title">
+                <span class="accent">JOIN FURY CRUISE:</span><br>
+                ALL ABOARD<br>
+                FOR $100,000
+            </h1>
+            <a href="https://betfury.bet/djps4zu9g" target="_blank" class="home__btn">Claim Bonus &amp; Sign Up</a>
+        </section>
+
+        <!-- Casino & Sports Cards -->
+        <section class="blocks">
+            <a href="https://betfury.bet/djps4zu9g" target="_blank" class="block block--casino">
+                <article class="block__inner">
+                    <div class="block__data">
+                        <h2 class="block__title">Casino Games</h2>
+                        <div class="block__text">Play 13,000+ slots &amp; live casino games with high RTP.</div>
+                    </div>
+                    <div class="block__image">
+                        <img class="icon-3d" src="https://cdn-icons-png.flaticon.com/512/5968/5968260.png" alt="Bitcoin">
+                    </div>
+                </article>
+            </a>
+
+            <a href="https://betfury.bet/djps4zu9g" target="_blank" class="block block--sports">
+                <article class="block__inner">
+                    <div class="block__data">
+                        <h2 class="block__title">Sportsbook</h2>
+                        <div class="block__text">Bet on Football, Cricket, Tennis with maximum odds.</div>
+                    </div>
+                    <div class="block__image">
+                        <img class="icon-3d" src="https://cdn-icons-png.flaticon.com/512/53/53283.png" alt="Football">
+                    </div>
+                </article>
+            </a>
+        </section>
+
+        <!-- Mega Register Call To Action -->
+        <section class="register-section">
+            <img class="coin-3d coin-3d--btc" src="https://cdn-icons-png.flaticon.com/512/5968/5968260.png" alt="BTC">
+            <img class="coin-3d coin-3d--eth" src="https://cdn-icons-png.flaticon.com/512/6001/6001527.png" alt="ETH">
+            <img class="coin-3d coin-3d--usdt" src="https://cdn-icons-png.flaticon.com/512/825/825508.png" alt="USDT">
+            <img class="coin-3d coin-3d--gold" src="https://cdn-icons-png.flaticon.com/512/272/272525.png" alt="Gold">
+
+            <div class="register-prize">
+                PRIZE POOL: <span class="register-prize__amount">$100,000</span>
+            </div>
+
+            <h2 class="register-section__title">Join The Winners Today</h2>
+            <p class="register-section__subtitle">
+                Create your account in seconds, claim your 590% welcome package + 225 Free Spins!
+            </p>
+
+            <a href="https://betfury.bet/djps4zu9g" target="_blank" class="mega-signup">
+                <!-- Call icon replaced with premium money bag icon -->
+                <img class="mega-signup__icon" src="https://cdn-icons-png.flaticon.com/512/2489/2489756.png" alt="Money Bag">
+                Sign Up Now
+                <img class="mega-signup__icon" src="https://cdn-icons-png.flaticon.com/512/5968/5968260.png" alt="Bitcoin">
+            </a>
+
+            <div class="register-badges">
+                <span class="badge">🎁 590% Deposit Bonus</span>
+                <span class="badge">🎰 225 Free Spins</span>
+                <span class="badge">⚡ Instant Withdrawals</span>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        <div class="footer__inner">
+            <div class="footer__links">
+                <a href="https://t.me/TezorFishTG" target="_blank" class="footer__link">✈️ Telegram Channel</a>
+                <a href="mailto:tazorfish@gmail.com" class="footer__link">✉️ tazorfish@gmail.com</a>
+            </div>
+
+            <div class="footer__social">
+                <a href="https://t.me/TezorFishTG" target="_blank" class="social-btn">✈️</a>
+                <a href="https://betfury.bet/djps4zu9g" target="_blank" class="social-btn">🎰</a>
+            </div>
+        </div>
+
+        <div class="footer__bottom">Copyright © 2019-2026 BetFury. All rights reserved.</div>
+    </footer>
+
+    <script>
+    window.addEventListener('load', function () {
+        setTimeout(function () { document.getElementById('loader').classList.add('hidden'); }, 300);
+    });
+
+    const canvas = document.getElementById('fx-canvas');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    });
+
+    const items = [];
+    const symbols = ['$', '₿', 'Ξ', '✦', '★'];
+
+    for (let i = 0; i < 45; i++) {
+        items.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            size: Math.random() * 18 + 12,
+            symbol: symbols[Math.floor(Math.random() * symbols.length)],
+            speedY: -(Math.random() * 0.8 + 0.3),
+            speedX: (Math.random() - 0.5) * 0.4,
+            opacity: Math.random() * 0.6 + 0.2,
+            color: Math.random() > 0.5 ? '#ffd966' : '#ff4d5e'
+        });
+    }
+
+    function renderFX() {
+        ctx.clearRect(0, 0, width, height);
+        items.forEach(p => {
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = p.opacity;
+            ctx.font = `${p.size}px Arial`;
+            ctx.fillText(p.symbol, p.x, p.y);
+
+            p.y += p.speedY;
+            p.x += p.speedX;
+
+            if (p.y < -20) {
+                p.y = height + 20;
+                p.x = Math.random() * width;
+            }
+        });
+        requestAnimationFrame(renderFX);
+    }
+    renderFX();
+    </script>
+
+</body>
+</html>
